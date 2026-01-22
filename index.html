@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misi Detektif Data: Panduan Analisis SMP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- UPDATED: Added Poppins font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Palette Name: Cyber Detective Pop -->
+    <!-- 
+        Palette Hex Codes:
+        Primary Purple: #8B5CF6 (Violet-500)
+        Secondary Cyan: #06B6D4 (Cyan-500)
+        Action Orange: #F97316 (Orange-500)
+        Dark Text: #1E293B (Slate-800)
+        Light Background: #F1F5F9 (Slate-100)
+    -->
+
+    <style>
+        /* UPDATED: Applied Poppins to body and headings */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #F1F5F9;
+            color: #1E293B;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        /* Chart Container Styling - Mandatory Requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Constraint width for readability */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px; /* Vertical constraint */
+            background: white;
+            border-radius: 1rem;
+            padding: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Custom Card Styling */
+        .clue-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .clue-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Unicode Icons used instead of SVG */
+        .icon-lg { font-size: 3rem; line-height: 1; }
+        .icon-md { font-size: 2rem; line-height: 1; }
+        
+    </style>
+</head>
+<body class="bg-slate-100">
+
+    <!-- Navigation / Header -->
+    <nav class="sticky top-0 z-50 bg-violet-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl">🕵️‍♂️</span>
+                <span class="font-bold text-xl tracking-wide">Detektif Data <span class="text-violet-200 text-sm font-normal block md:inline">/ Data Detective</span></span>
+            </div>
+            <div class="hidden md:flex gap-6 font-semibold text-sm">
+                <div class="flex flex-col items-center group cursor-pointer">
+                    <a href="#cleaning" class="group-hover:text-cyan-200 transition">Bersih-Bersih</a>
+                    <span class="text-xs text-violet-300 font-normal">Cleaning</span>
+                </div>
+                <div class="flex flex-col items-center group cursor-pointer">
+                    <a href="#stats" class="group-hover:text-cyan-200 transition">Jurus 3M</a>
+                    <span class="text-xs text-violet-300 font-normal">3M Stats</span>
+                </div>
+                <div class="flex flex-col items-center group cursor-pointer">
+                    <a href="#visuals" class="group-hover:text-cyan-200 transition">Visualisasi</a>
+                    <span class="text-xs text-violet-300 font-normal">Visuals</span>
+                </div>
+                <div class="flex flex-col items-center group cursor-pointer">
+                    <a href="#logic" class="group-hover:text-cyan-200 transition">Jebakan</a>
+                    <span class="text-xs text-violet-300 font-normal">Traps</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="bg-gradient-to-br from-violet-600 to-indigo-700 text-white pt-20 pb-24 px-4 relative overflow-hidden">
+        <div class="absolute top-10 right-10 text-9xl opacity-10 select-none">🔍</div>
+        <div class="absolute bottom-10 left-10 text-8xl opacity-10 select-none">📊</div>
+        
+        <div class="container mx-auto text-center relative z-10 max-w-4xl">
+            <h1 class="text-4xl md:text-6xl font-bold mb-2 drop-shadow-md">Misi: Mengungkap Misteri Angka</h1>
+            <h2 class="text-2xl md:text-3xl font-light text-cyan-300 mb-6 italic">Mission: Uncovering the Mystery of Numbers</h2>
+            
+            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-8 border border-white/20">
+                <p class="text-lg md:text-xl font-light mb-2 text-violet-50">
+                    Data mentah itu seperti petunjuk yang berserakan di TKP. Tugasmu menyusunnya menjadi cerita yang masuk akal!
+                </p>
+                <p class="text-sm md:text-base text-violet-200 italic border-t border-violet-400/30 pt-2 mt-2">
+                    Raw data is like scattered clues at a crime scene. Your job is to organize them into a logical story!
+                </p>
+            </div>
+
+            <a href="#cleaning" class="inline-block bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:scale-105">
+                Mulai Penyelidikan / Start Investigation 🚀
+            </a>
+        </div>
+    </header>
+
+    <!-- Section 1: Data Cleaning -->
+    <section id="cleaning" class="py-16 container mx-auto px-4">
+        <div class="flex flex-col md:flex-row gap-12 items-center">
+            <div class="md:w-1/2">
+                <div class="inline-block bg-orange-100 text-orange-600 font-bold px-3 py-1 rounded-full mb-4 text-sm tracking-wide uppercase">Tahap 1 / Phase 1</div>
+                <h2 class="text-4xl font-bold text-slate-800 mb-2">Bersih-Bersih TKP</h2>
+                <h3 class="text-2xl text-violet-600 mb-6 font-semibold">Data Cleaning</h3>
+                
+                <p class="text-lg text-slate-600 mb-2 leading-relaxed">
+                    Sebelum dimasak, sayuran harus dicuci. Data juga begitu! Seringkali data hasil survei itu "kotor".
+                </p>
+                <p class="text-sm text-slate-500 italic mb-6 border-l-2 border-slate-300 pl-3">
+                    Before cooking, veggies must be washed. Same with data! Survey results are often "dirty".
+                </p>
+                
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="clue-card bg-white p-4 rounded-xl shadow-sm border-l-4 border-red-500 flex items-start gap-4">
+                        <span class="icon-md">🗑️</span>
+                        <div>
+                            <h4 class="font-bold text-lg">Jawaban Kosong <span class="text-sm font-normal text-slate-500">/ Empty Answers</span></h4>
+                            <p class="text-sm text-slate-500">Responden lupa mengisi? Hapus! <br><em class="text-xs">Respondent forgot to fill? Delete!</em></p>
+                        </div>
+                    </div>
+                    <div class="clue-card bg-white p-4 rounded-xl shadow-sm border-l-4 border-yellow-500 flex items-start gap-4">
+                        <span class="icon-md">👽</span>
+                        <div>
+                            <h4 class="font-bold text-lg">Jawaban Aneh <span class="text-sm font-normal text-slate-500">/ Weird Answers</span></h4>
+                            <p class="text-sm text-slate-500">Umur 1000 tahun? Typo. Perbaiki! <br><em class="text-xs">Age 1000 years? Typo. Fix it!</em></p>
+                        </div>
+                    </div>
+                    <div class="clue-card bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-500 flex items-start gap-4">
+                        <span class="icon-md">👯</span>
+                        <div>
+                            <h4 class="font-bold text-lg">Duplikasi <span class="text-sm font-normal text-slate-500">/ Duplicates</span></h4>
+                            <p class="text-sm text-slate-500">Isi 2x? Ambil satu saja. <br><em class="text-xs">Filled 2x? Keep only one.</em></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="md:w-1/2 w-full">
+                <div class="chart-container">
+                    <canvas id="cleaningChart"></canvas>
+                </div>
+                <p class="text-center text-sm text-slate-500 mt-3 italic">
+                    Grafik: Kualitas > Kuantitas!<br>
+                    Chart: Quality > Quantity!
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: 3M Statistics -->
+    <section id="stats" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <div class="inline-block bg-cyan-100 text-cyan-700 font-bold px-3 py-1 rounded-full mb-4 text-sm tracking-wide uppercase">Tahap 2 / Phase 2</div>
+                <h2 class="text-4xl font-bold text-slate-800 mb-2">Tiga Jurus Statistik (3M)</h2>
+                <h3 class="text-xl text-slate-500 italic mb-4">The 3 Moves of Statistics</h3>
+                <p class="text-lg text-slate-600">
+                    Untuk melihat "wajah" asli data, kita menggunakan tiga alat bantu.
+                    <span class="block text-sm italic text-slate-400 mt-1">To see the true "face" of data, we use three tools.</span>
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Mean Card -->
+                <div class="bg-slate-50 rounded-2xl p-6 shadow-md hover:shadow-lg transition border border-slate-100">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-2xl font-bold text-violet-600">1. Mean</h3>
+                        <span class="text-3xl">➗</span>
+                    </div>
+                    <p class="text-slate-600 mb-2">Nilai <strong>Rata-rata</strong>. Bagus untuk data yang seragam.</p>
+                    <p class="text-xs text-slate-400 italic mb-4">The <strong>Average</strong>. Good for uniform data.</p>
+                    <div class="bg-violet-100 p-3 rounded-lg text-sm text-violet-800 font-mono">
+                        (A + B + C) / 3 = Mean
+                    </div>
+                </div>
+
+                <!-- Median Card -->
+                <div class="bg-slate-50 rounded-2xl p-6 shadow-md hover:shadow-lg transition border border-slate-100 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-bl-lg">PENTING / IMPORTANT!</div>
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-2xl font-bold text-orange-600">2. Median</h3>
+                        <span class="text-3xl">🎯</span>
+                    </div>
+                    <p class="text-slate-600 mb-2">Nilai <strong>Tengah</strong>. Jurus andalan saat ada data ekstrem.</p>
+                    <p class="text-xs text-slate-400 italic mb-4">The <strong>Middle Value</strong>. Best when extreme data exists.</p>
+                    <div class="bg-orange-100 p-3 rounded-lg text-sm text-orange-800 font-mono">
+                        Data: 1, 2, [3], 4, 100
+                    </div>
+                </div>
+
+                <!-- Modus Card -->
+                <div class="bg-slate-50 rounded-2xl p-6 shadow-md hover:shadow-lg transition border border-slate-100">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-2xl font-bold text-cyan-600">3. Modus</h3>
+                        <span class="text-3xl">🏆</span>
+                    </div>
+                    <p class="text-slate-600 mb-2">Nilai <strong>Terpopuler</strong>. Cocok untuk data kategori.</p>
+                    <p class="text-xs text-slate-400 italic mb-4">The <strong>Most Frequent</strong>. Good for categorical data.</p>
+                    <div class="bg-cyan-100 p-3 rounded-lg text-sm text-cyan-800 font-mono">
+                        Bakso, Bakso, Mie -> Bakso
+                    </div>
+                </div>
+            </div>
+
+            <!-- The Sultan Chart Demo -->
+            <div class="mt-16 bg-slate-100 rounded-3xl p-8 border-2 border-slate-200">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 class="text-2xl font-bold text-slate-800 mb-2">Kasus: "Anak Sultan di Kelas"</h3>
+                        <h4 class="text-lg text-slate-500 italic mb-4">Case: "The Rich Kid in Class"</h4>
+                        
+                        <p class="text-slate-600 mb-2 text-sm">
+                            4 siswa uang sakunya <strong>10rb</strong>. 1 siswa uang sakunya <strong>1 Juta</strong> (Si Sultan).
+                        </p>
+                        <p class="text-slate-500 mb-4 text-xs italic">
+                            4 students have <strong>10k</strong> pocket money. 1 student has <strong>1 Million</strong> (The Rich Kid).
+                        </p>
+
+                        <ul class="space-y-3 mb-6">
+                            <li class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center font-bold text-sm">❌</span>
+                                <div>
+                                    <span class="font-bold text-slate-700 block">Mean (Rata-rata): 208rb</span>
+                                    <span class="text-xs text-slate-500">Salah! Terlihat semua kaya. / <em class="text-slate-400">Wrong! Looks like everyone is rich.</em></span>
+                                </div>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-sm">✅</span>
+                                <div>
+                                    <span class="font-bold text-slate-700 block">Median (Tengah): 10rb</span>
+                                    <span class="text-xs text-slate-500">Benar! Mewakili mayoritas. / <em class="text-slate-400">Correct! Represents the majority.</em></span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="w-full">
+                        <div class="chart-container">
+                            <canvas id="sultanChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Visualization -->
+    <section id="visuals" class="py-16 container mx-auto px-4">
+        <div class="text-center mb-12">
+            <div class="inline-block bg-violet-100 text-violet-700 font-bold px-3 py-1 rounded-full mb-4 text-sm tracking-wide uppercase">Tahap 3 / Phase 3</div>
+            <h2 class="text-4xl font-bold text-slate-800 mb-2">Bercerita dengan Gambar</h2>
+            <h3 class="text-xl text-slate-500 italic mb-4">Storytelling with Pictures</h3>
+            <p class="text-lg text-slate-600">
+                Pilih senjata grafikmu dengan bijak!
+                <span class="block text-sm italic text-slate-400">Choose your chart weapon wisely!</span>
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Bar Chart -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <div class="flex items-center gap-3 mb-4 border-b pb-4">
+                    <span class="text-3xl">📊</span>
+                    <div>
+                        <h3 class="font-bold text-xl">Bar Chart (Batang)</h3>
+                        <p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Compare / Membandingkan</p>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="barChart"></canvas>
+                </div>
+                <p class="mt-4 text-sm text-slate-600">
+                    <strong>Contoh:</strong> Makanan favorit. Bakso menang telak.
+                    <br><em class="text-xs text-slate-400">Example: Favorite food. Meatballs win by far.</em>
+                </p>
+            </div>
+
+            <!-- Line Chart -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <div class="flex items-center gap-3 mb-4 border-b pb-4">
+                    <span class="text-3xl">📈</span>
+                    <div>
+                        <h3 class="font-bold text-xl">Line Chart (Garis)</h3>
+                        <p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Trends / Tren Waktu</p>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="lineChart"></canvas>
+                </div>
+                <p class="mt-4 text-sm text-slate-600">
+                    <strong>Contoh:</strong> Pertumbuhan tanaman 7 hari.
+                    <br><em class="text-xs text-slate-400">Example: Plant growth over 7 days.</em>
+                </p>
+            </div>
+
+            <!-- Pie Chart -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 md:col-span-2">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <div class="flex items-center gap-3 mb-4 border-b pb-4">
+                            <span class="text-3xl">🥧</span>
+                            <div>
+                                <h3 class="font-bold text-xl">Pie Chart (Lingkaran)</h3>
+                                <p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Portion / Porsi</p>
+                            </div>
+                        </div>
+                        <p class="text-slate-600 mb-4 text-sm">
+                            Untuk melihat bagian dari keseluruhan.
+                            <br><em class="text-xs text-slate-400">To see parts of a whole.</em>
+                        </p>
+                        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded text-sm text-red-700">
+                            <strong>Peringatan Detektif:</strong> Jangan pakai Pie Chart jika kategorinya lebih dari 5!
+                            <br><em class="text-xs font-normal opacity-80">Detective Warning: Don't use Pie Charts if there are more than 5 categories!</em>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Patterns & Logic Trap -->
+    <section id="logic" class="py-16 bg-slate-900 text-white">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row gap-12 items-center">
+                <div class="md:w-1/2">
+                    <div class="inline-block bg-yellow-500 text-black font-bold px-3 py-1 rounded-full mb-4 text-sm tracking-wide uppercase">Tahap 4 / Phase 4</div>
+                    <h2 class="text-4xl font-bold mb-2 text-yellow-400">⚠️ Jebakan Logika</h2>
+                    <h3 class="text-xl text-slate-400 mb-6 italic">The Logic Trap: Correlation ≠ Causation</h3>
+                    
+                    <p class="text-lg text-slate-300 mb-6 text-sm">
+                        Hanya karena dua hal terjadi bersamaan, belum tentu yang satu menyebabkan yang lain.
+                        <br><em class="text-slate-500 text-xs">Just because two things happen together doesn't mean one causes the other.</em>
+                    </p>
+                    
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                        <h4 class="font-bold text-xl mb-2 text-cyan-400">Kasus: Es Krim & Kacamata <span class="text-sm font-normal text-slate-500 block">Case: Ice Cream & Sunglasses</span></h4>
+                        
+                        <hr class="border-slate-700 my-4">
+                        
+                        <p class="font-bold text-red-400 mb-1">❌ Salah / Wrong:</p>
+                        <p class="text-sm text-slate-400 mb-3">"Makan es krim bikin silau." <br><em>"Eating ice cream causes glare."</em></p>
+                        
+                        <p class="font-bold text-green-400 mb-1">✅ Benar / Right:</p>
+                        <p class="text-sm text-slate-400">"<strong>Musim Panas</strong> menyebabkan keduanya!" <br><em>"<strong>Summer</strong> causes both!"</em></p>
+                    </div>
+                </div>
+                
+                <div class="md:w-1/2 w-full">
+                    <div class="chart-container">
+                        <canvas id="correlationChart"></canvas>
+                    </div>
+                    <p class="text-center text-sm text-slate-400 mt-3">
+                        Grafik: Bergerak bersamaan, tapi tidak saling mempengaruhi.
+                        <br><em class="text-xs opacity-70">Chart: Moving together, but not affecting each other.</em>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Conclusion Section -->
+    <section class="py-16 container mx-auto px-4 text-center">
+        <h2 class="text-4xl font-bold text-slate-800 mb-2">Kasus Ditutup! 📂</h2>
+        <h3 class="text-2xl text-slate-500 italic mb-8">Case Closed!</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto text-left">
+            <div class="bg-white p-8 rounded-2xl shadow-lg border-t-8 border-violet-600">
+                <h3 class="text-2xl font-bold mb-2">Kesimpulan Jujur</h3>
+                <h4 class="text-sm text-slate-500 uppercase font-bold mb-4">Honest Conclusion</h4>
+                <p class="text-slate-600 mb-4 text-sm">
+                    Detektif hebat bukan yang selalu benar, tapi yang <strong>jujur</strong> melaporkan fakta.
+                    <br><em class="text-xs text-slate-400">Great detectives aren't always right, but they <strong>honestly</strong> report the facts.</em>
+                </p>
+                <div class="flex items-center gap-2 text-violet-600 font-bold text-sm">
+                    <span>✅</span> Hipotesis Ditolak itu wajar! (Rejected hypothesis is normal!)
+                </div>
+            </div>
+            
+            <div class="bg-white p-8 rounded-2xl shadow-lg border-t-8 border-cyan-500">
+                <h3 class="text-2xl font-bold mb-2">Alat Bantu Gratis</h3>
+                <h4 class="text-sm text-slate-500 uppercase font-bold mb-4">Free Tools</h4>
+                <ul class="space-y-4 text-slate-600">
+                    <li class="flex items-start gap-3">
+                        <span class="bg-green-100 text-green-600 p-2 rounded-lg text-xl">📊</span>
+                        <div>
+                            <span class="font-bold block text-slate-800">Google Sheets / Excel</span>
+                            <span class="text-xs">Hitung & Grafik Otomatis. (Auto Calc & Chart)</span>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-purple-100 text-purple-600 p-2 rounded-lg text-xl">📝</span>
+                        <div>
+                            <span class="font-bold block text-slate-800">Google Forms</span>
+                            <span class="text-xs">Kuesioner Online. (Online Survey)</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <p class="mt-12 text-slate-500 font-bold text-lg">Selamat Meneliti / Happy Researching! 🚀</p>
+    </section>
+
+    <!-- Scripts for Chart.js -->
+    <script>
+        // --- Helper Function: Label Wrapping ---
+        // Manages wrapping for long strings
+        function wrapLabel(label) {
+            if (Array.isArray(label)) return label; // Return if already array (bilingual manual split)
+            if (label.length <= 16) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + " " + words[i]).length < 20) { // Slight increase for bilingual tolerance
+                    currentLine += " " + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- Helper Function: Tooltip Config ---
+        const tooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        // --- Common Chart Options ---
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        // UPDATED: Used Poppins for chart legends
+                        font: { family: "'Poppins', sans-serif" },
+                        boxWidth: 12
+                    }
+                },
+                tooltip: tooltipConfig
+            }
+        };
+
+        // 1. Cleaning Chart (Bar: Before vs After)
+        const ctxCleaning = document.getElementById('cleaningChart').getContext('2d');
+        new Chart(ctxCleaning, {
+            type: 'bar',
+            data: {
+                labels: [['Total Awal', '(Initial)'], ['Data Bersih', '(Clean)']],
+                datasets: [{
+                    label: 'Responden / Respondents',
+                    data: [150, 112],
+                    backgroundColor: ['#94a3b8', '#8B5CF6'],
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                ...commonOptions,
+                plugins: {
+                    ...commonOptions.plugins,
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // 2. The Sultan Chart (Mean vs Median)
+        const ctxSultan = document.getElementById('sultanChart').getContext('2d');
+        new Chart(ctxSultan, {
+            type: 'bar',
+            data: {
+                labels: ['A', 'B', 'C', 'D', ['Sultan', '(Rich Kid)']], 
+                datasets: [
+                    {
+                        type: 'line',
+                        label: 'Mean (Avg)',
+                        data: [208, 208, 208, 208, 208],
+                        borderColor: '#EF4444', // Red
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        pointRadius: 0
+                    },
+                    {
+                        type: 'line',
+                        label: 'Median',
+                        data: [10, 10, 10, 10, 10], 
+                        borderColor: '#22C55E', // Green
+                        borderWidth: 2,
+                        pointRadius: 0
+                    },
+                    {
+                        type: 'bar',
+                        label: 'Rp (x1000)',
+                        data: [10, 10, 10, 10, 1000],
+                        backgroundColor: ['#cbd5e1', '#cbd5e1', '#cbd5e1', '#cbd5e1', '#F97316'],
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        type: 'logarithmic',
+                        title: { display: true, text: 'Rupiah (Log Scale)' }
+                    }
+                }
+            }
+        });
+
+        // 3. Bar Chart (Food Preferences)
+        const ctxBar = document.getElementById('barChart').getContext('2d');
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: [['Bakso', '(Meatball)'], ['Mie Ayam', '(Noodles)'], ['Soto', '(Soup)'], 'Gado-gado'],
+                datasets: [{
+                    label: 'Siswa / Students',
+                    data: [45, 25, 15, 10],
+                    backgroundColor: ['#8B5CF6', '#A78BFA', '#C4B5FD', '#DDD6FE'],
+                    borderRadius: 6
+                }]
+            },
+            options: commonOptions
+        });
+
+        // 4. Line Chart (Plant Growth)
+        const ctxLine = document.getElementById('lineChart').getContext('2d');
+        new Chart(ctxLine, {
+            type: 'line',
+            data: {
+                labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
+                datasets: [{
+                    label: 'Tinggi / Height (cm)',
+                    data: [2, 3.5, 5, 8.2, 12, 15.5, 19],
+                    borderColor: '#06B6D4', // Cyan
+                    backgroundColor: 'rgba(6, 182, 212, 0.2)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: commonOptions
+        });
+
+        // 5. Pie Chart (Transport)
+        const ctxPie = document.getElementById('pieChart').getContext('2d');
+        new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: [['Sepeda', '(Bike)'], ['Jalan', '(Walk)'], ['Diantar', '(Car)']],
+                datasets: [{
+                    data: [30, 20, 50],
+                    backgroundColor: ['#F97316', '#06B6D4', '#8B5CF6'],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: commonOptions
+        });
+
+        // 6. Correlation Chart (Ice Cream vs Sunglasses)
+        const ctxCorr = document.getElementById('correlationChart').getContext('2d');
+        new Chart(ctxCorr, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                datasets: [
+                    {
+                        label: 'Es Krim / Ice Cream',
+                        data: [10, 12, 15, 25, 40, 55, 60, 58],
+                        borderColor: '#F97316', // Orange
+                        yAxisID: 'y',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Kacamata / Sunglasses',
+                        data: [5, 6, 8, 15, 30, 45, 50, 48],
+                        borderColor: '#06B6D4', // Cyan
+                        yAxisID: 'y1', // Dual Axis
+                        tension: 0.4,
+                        borderDash: [5, 5]
+                    }
+                ]
+            },
+            options: {
+                ...commonOptions,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        grid: { drawOnChartArea: false }
+                    },
+                    x: {
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { color: '#cbd5e1' } // Light text for dark bg
+                    },
+                    tooltip: tooltipConfig
+                }
+            }
+        });
+    </script>
+</body>
+</html>
